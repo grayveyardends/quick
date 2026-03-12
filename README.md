@@ -1,4 +1,5 @@
-# QuickQuid: System Architecture & Technical Specification
+```markdown
+# QuickQuid: Full Project Repository Specification
 
 ## 1. High-Level System Architecture
 The system uses a modular monolith approach designed for event-driven scaling via NATS JetStream and state-managed performance via Redis.
@@ -31,15 +32,25 @@ graph TD
     end
 
     Web <--> Gateway
-    Gateway <--> Auth & Escrow & Chat & Market
+    Gateway <--> Auth
+    Gateway <--> Escrow
+    Gateway <--> Chat
+    Gateway <--> Market
     Escrow <--> Redis
     Chat <--> NATS
     Escrow <--> NATS
     Auth & Market & Escrow --> Postgres
     PersonalSites <--> R2
 
-2. User Lifecycle & Page Workflow
-Detailed mapping of the student journey from EDU verification to professional networking and personal site management.
+```
+
+---
+
+## 2. User Lifecycle & Page Workflow
+
+Mapping of the student journey from EDU verification to professional networking and personal site management.
+
+```mermaid
 flowchart TD
     subgraph Onboarding
         Start[Sign-In via EDU Email] --> Verify{Verification}
@@ -64,11 +75,18 @@ flowchart TD
         Hunt --> Work[Apply & Set Escrow]
     end
 
-3. Buyer & Company Pipeline
+```
+
+---
+
+## 3. Buyer & Company Pipeline
+
 Flow for clients to post requirements, interview talent, and manage milestone-based payments.
+
+```mermaid
 flowchart LR
     subgraph Hiring
-        Post[Post Job] --> Match[Redis Filtering]
+        Post[Job Posting] --> Match[Redis Filtering]
         Match --> Interview[Interview Suite]
     end
 
@@ -78,8 +96,15 @@ flowchart LR
         Lock --> Release[Automated Payout]
     end
 
-4. Escrow State Machine Logic
+```
+
+---
+
+## 4. Escrow State Machine Logic
+
 Deterministic fund management using Redis for high-speed state transitions and Postgres for the permanent ledger.
+
+```mermaid
 stateDiagram-v2
     [*] --> Proposed: Freelancer/Buyer Drafts Terms
     Proposed --> Locked: Buyer Deposits to Escrow
@@ -90,8 +115,15 @@ stateDiagram-v2
     Dispute --> Released: Manual/Legal Resolution
     Released --> [*]: Funds Dispersed
 
-5. Unified Inbox: Chat Object Sequence
+```
+
+---
+
+## 5. Unified Inbox: Chat Object Sequence
+
 Interaction logic for rendering "Special Objects" (contracts, payments, portfolios) within a real-time stream.
+
+```mermaid
 sequenceDiagram
     participant U1 as User A
     participant B as Go Backend
@@ -107,8 +139,15 @@ sequenceDiagram
     U2->>B: Interaction (Accept/Pay)
     B->>R: Update Hot State
 
-6. Freelance Chain: Peer Connection Logic
+```
+
+---
+
+## 6. Freelance Chain: Peer Connection Logic
+
 The "Chain" allows students to link profiles to form collaborative units for complex projects.
+
+```mermaid
 graph BT
     Dev[Developer] --> Chain[Freelance Chain]
     Designer[Designer] --> Chain
@@ -117,19 +156,30 @@ graph BT
     Agency --> MultiPay[Split-Payment Escrow]
     Client[Company/Buyer] --> MultiPay
 
-7. Technical Stack Specification
+```
+
+---
+
+## 7. Technical Stack Specification
+
 | Layer | Technology | Implementation Detail |
-|---|---|---|
-| Language | Go (Golang) | All backend logic, microservices, and concurrency. |
-| Frontend | Next.js 15 | SSR for subdomains; React Server Components for chat objects. |
-| Build System | Nix / Flakes | Hermetic builds; identical local/prod environments. |
-| Deployment | Coolify | Automated orchestration on Ubuntu VPS infrastructure. |
-| Event Bus | NATS JetStream | Real-time messaging and persistent event logs. |
-| Hot Layer | Redis | Escrow activity tracking, locks, and session caching. |
-| Cold Layer | PostgreSQL | Source of truth for users, history, and financial records. |
-| File Store | Cloudflare R2 | S3-compatible, zero-egress storage for portfolios. |
-8. Data Model: Special Objects
+| --- | --- | --- |
+| **Language** | Go (Golang) | All backend logic, microservices, and concurrency. |
+| **Frontend** | Next.js 15 | SSR for subdomains; React Server Components for chat objects. |
+| **Build System** | Nix / Flakes | Hermetic builds; identical local/prod environments. |
+| **Deployment** | Coolify | Automated orchestration on Ubuntu VPS infrastructure. |
+| **Event Bus** | NATS JetStream | Real-time messaging and persistent event logs. |
+| **Hot Layer** | Redis | Escrow activity tracking, locks, and session caching. |
+| **Cold Layer** | PostgreSQL | Source of truth for users, history, and financial records. |
+| **File Store** | Cloudflare R2 | S3-compatible, zero-egress storage for portfolios. |
+
+---
+
+## 8. Data Model: Special Objects
+
 Go struct definition for interactive chat messages.
+
+```go
 type SpecialObject struct {
     ObjectID    string                 `json:"object_id"`
     SenderID    string                 `json:"sender_id"`
@@ -139,11 +189,19 @@ type SpecialObject struct {
     CreatedAt   int64                  `json:"created_at"`
 }
 
-9. Infrastructure Optimization
- * Performance: Redis handles all "hot" escrow activity, bypassing Postgres disk I/O for 90% of state updates.
- * Storage: Large files (Portfolios/Assets) are never stored in the database; only Cloudflare R2 URLs are persisted.
- * Builds: Nix-built containers contain no shell or extra binaries (distroless), minimizing security attack vectors.
- * Scaling: NATS allows services to be moved to different servers without changing a single line of code.
-<!-- end list -->
+```
 
-**Would you like me to generate the specific Nix Flake file to initialize this environment locally?**
+---
+
+## 9. Infrastructure Optimization
+
+* **Performance:** Redis handles all "hot" escrow activity, bypassing Postgres disk I/O for 90% of state updates.
+* **Storage:** Large files (Portfolios/Assets) are never stored in the database; only Cloudflare R2 URLs are persisted.
+* **Builds:** Nix-built containers contain no shell or extra binaries (distroless), minimizing security attack vectors.
+* **Scaling:** NATS allows services to be moved to different servers without changing a single line of code.
+
+```
+
+Would you like me to generate the `flake.nix` file so you can initialize this entire development environment with a single command?
+
+```
