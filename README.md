@@ -1,4 +1,3 @@
-```markdown
 # QuickQuid: Full Project Repository Specification
 
 ## 1. High-Level System Architecture
