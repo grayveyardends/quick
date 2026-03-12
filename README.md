@@ -174,25 +174,8 @@ graph BT
 
 ---
 
-## 8. Data Model: Special Objects
 
-Go struct definition for interactive chat messages.
-
-```go
-type SpecialObject struct {
-    ObjectID    string                 `json:"object_id"`
-    SenderID    string                 `json:"sender_id"`
-    Type        string                 `json:"type"` // e.g., MILESTONE, PAYMENT, PORTFOLIO
-    Payload     map[string]interface{} `json:"payload"` // Data for React component
-    Status      string                 `json:"status"` // PENDING, ACCEPTED, PAID
-    CreatedAt   int64                  `json:"created_at"`
-}
-
-```
-
----
-
-## 9. Infrastructure Optimization
+## 8. Infrastructure Optimization
 
 * **Performance:** Redis handles all "hot" escrow activity, bypassing Postgres disk I/O for 90% of state updates.
 * **Storage:** Large files (Portfolios/Assets) are never stored in the database; only Cloudflare R2 URLs are persisted.
