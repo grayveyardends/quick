@@ -198,9 +198,4 @@ type SpecialObject struct {
 * **Storage:** Large files (Portfolios/Assets) are never stored in the database; only Cloudflare R2 URLs are persisted.
 * **Builds:** Nix-built containers contain no shell or extra binaries (distroless), minimizing security attack vectors.
 * **Scaling:** NATS allows services to be moved to different servers without changing a single line of code.
-
-```
-
-Would you like me to generate the `flake.nix` file so you can initialize this entire development environment with a single command?
-
-```
+---
